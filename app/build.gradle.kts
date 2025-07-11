@@ -56,6 +56,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3.android)
 
+    implementation(libs.coil.compose)
+    implementation(libs.coil.okhttp)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
