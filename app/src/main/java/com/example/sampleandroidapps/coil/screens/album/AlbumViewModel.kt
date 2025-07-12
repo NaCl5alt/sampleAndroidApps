@@ -7,6 +7,7 @@ import com.example.sampleandroidapps.network.jsonPlaceholder.album.usecase.GetAl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,12 +24,13 @@ data class AlbumScreenUiState(
 class AlbumViewModel @Inject constructor(
     private val getAlbumListUseCase: GetAlbumListUseCase
 ) : ViewModel() {
-    val uiState = MutableStateFlow(AlbumScreenUiState.default)
+    private val _uiState = MutableStateFlow(AlbumScreenUiState.default)
+    val uiState: StateFlow<AlbumScreenUiState> = _uiState
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getAlbumListUseCase().onSuccess { albumList ->
-                uiState.update { state ->
+                _uiState.update { state ->
                     state.copy(albumList = albumList)
                 }
             }
