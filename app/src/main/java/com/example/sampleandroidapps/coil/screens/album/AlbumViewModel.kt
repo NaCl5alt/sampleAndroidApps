@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class AlbumScreenUiState(
@@ -30,8 +31,10 @@ class AlbumViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getAlbumListUseCase().onSuccess { albumList ->
-                _uiState.update { state ->
-                    state.copy(albumList = albumList)
+                withContext(Dispatchers.Main) {
+                    _uiState.update { state ->
+                        state.copy(albumList = albumList)
+                    }
                 }
             }
         }
