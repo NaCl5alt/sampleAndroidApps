@@ -8,6 +8,7 @@ import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.request.crossfade
+import coil3.util.DebugLogger
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -25,6 +26,11 @@ class SampleApplication : Application(), SingletonImageLoader.Factory {
                     .directory(context.cacheDir.resolve("image_cache"))
                     .maxSizePercent(0.02)
                     .build()
+            }
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    logger(DebugLogger())
+                }
             }
             .build()
 }
