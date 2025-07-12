@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.Path
 
 @Serializable
 @JsonClass(generateAdapter = true)
@@ -19,6 +19,6 @@ data class Photo(
 interface PhotoApi {
     @GET("/albums/{albumId}/photos")
     suspend fun getPhotos(
-        @Query("albumId") albumId: Int
+        @Path("albumId") albumId: Int
     ): Response<List<Photo>>
 }
