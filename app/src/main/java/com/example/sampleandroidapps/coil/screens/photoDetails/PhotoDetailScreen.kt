@@ -23,7 +23,11 @@ fun PhotoDetailScreen(
     photo: Photo,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         PhotoView(photo.url)
 
         Column(

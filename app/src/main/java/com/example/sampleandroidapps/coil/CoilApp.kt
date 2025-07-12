@@ -7,19 +7,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.sampleandroidapps.coil.navigation.CoilAppNavDisplay
-import com.example.sampleandroidapps.ui.theme.SampleAndroidAppsTheme
 
 @Composable
 fun CoilApp() {
-    SampleAndroidAppsTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                CoilAppNavDisplay()
-            }
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            CoilAppNavDisplay()
         }
     }
 }

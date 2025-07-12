@@ -1,5 +1,6 @@
 package com.example.sampleandroidapps.coil.screens.photo
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,7 +40,11 @@ private fun PhotoScreen(
     onNavigate: (CoilAppNavKey) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         LazyColumn(modifier = modifier.fillMaxSize()) {
             item {
                 Text(
