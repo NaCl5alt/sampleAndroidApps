@@ -39,7 +39,9 @@ private fun AlbumScreen(
         items(uiState.albumList) { album ->
             AlbumItemSection(
                 album,
-                modifier = Modifier.clickable { onNavigate(CoilAppNavKey.PhotoScreen) }
+                modifier = Modifier.clickable {
+                    onNavigate(CoilAppNavKey.PhotoScreen(album))
+                }
             )
 
             HorizontalDivider(

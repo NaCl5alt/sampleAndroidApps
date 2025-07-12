@@ -1,6 +1,8 @@
 package com.example.sampleandroidapps.coil.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
+import com.example.sampleandroidapps.network.jsonPlaceholder.photo.Photo
 import kotlinx.serialization.Serializable
 
 sealed interface CoilAppNavKey : NavKey {
@@ -8,8 +10,8 @@ sealed interface CoilAppNavKey : NavKey {
     data object AlbumScreen : CoilAppNavKey
 
     @Serializable
-    data object PhotoScreen : CoilAppNavKey
+    data class PhotoScreen(val album: Album) : CoilAppNavKey
 
     @Serializable
-    data object PhotoDetailScreen : CoilAppNavKey
+    data class PhotoDetailScreen(val photo: Photo) : CoilAppNavKey
 }

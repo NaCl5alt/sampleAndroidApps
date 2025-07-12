@@ -28,9 +28,12 @@ fun CoilAppNavDisplay() {
             when (key) {
                 CoilAppNavKey.AlbumScreen -> albumScreen(onNavigate = addToBackStack)
 
-                CoilAppNavKey.PhotoScreen -> photoScreen(onNavigate = addToBackStack)
+                is CoilAppNavKey.PhotoScreen -> photoScreen(
+                    key,
+                    onNavigate = addToBackStack
+                )
 
-                CoilAppNavKey.PhotoDetailScreen -> photoDetailScreen()
+                is CoilAppNavKey.PhotoDetailScreen -> photoDetailScreen()
             }
         } as (NavKey) -> NavEntry<NavKey>
     )
