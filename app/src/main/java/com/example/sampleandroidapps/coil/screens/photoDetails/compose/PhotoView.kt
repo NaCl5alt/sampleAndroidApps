@@ -22,12 +22,16 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.sampleandroidapps.ui.theme.SampleAndroidAppsTheme
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 
 @Composable
 fun PhotoView(photoUrl: String) {
     val painter = rememberAsyncImagePainter(photoUrl)
     val state by painter.state.collectAsState()
     val retryLoadImage = { painter.restart() }
+
+    val zoomState = rememberZoomState()
 
     when (state) {
         is AsyncImagePainter.State.Empty,
@@ -37,7 +41,9 @@ fun PhotoView(photoUrl: String) {
 
         is AsyncImagePainter.State.Success -> {
             Image(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .zoomable(zoomState),
                 painter = painter,
                 contentScale = ContentScale.Crop,
                 contentDescription = null
