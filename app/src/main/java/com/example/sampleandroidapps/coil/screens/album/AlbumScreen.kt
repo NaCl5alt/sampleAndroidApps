@@ -7,14 +7,33 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.sampleandroidapps.coil.navigation.CoilAppNavKey
+import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
 import com.example.sampleandroidapps.ui.theme.SampleAndroidAppsTheme
 
 @Composable
-fun AlbumScreen(modifier: Modifier = Modifier, onNavigate: (CoilAppNavKey) -> Unit) {
+fun AlbumScreen(
+    onNavigate: (CoilAppNavKey) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AlbumViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    AlbumScreen(uiState, onNavigate, modifier)
+}
+
+@Composable
+private fun AlbumScreen(
+    uiState: AlbumScreenUiState,
+    onNavigate: (CoilAppNavKey) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(modifier = modifier.fillMaxSize()) {
         Text(text = "Album Screen")
 
@@ -30,6 +49,15 @@ fun AlbumScreen(modifier: Modifier = Modifier, onNavigate: (CoilAppNavKey) -> Un
 @Composable
 private fun PreviewAlbumScreen() {
     SampleAndroidAppsTheme {
-        AlbumScreen {}
+        AlbumScreen(
+            AlbumScreenUiState(
+                listOf(
+                    Album(1, 1, "title1"),
+                    Album(2, 2, "title2"),
+                    Album(3, 3, "title3")
+                )
+            ),
+            {}
+        )
     }
 }
