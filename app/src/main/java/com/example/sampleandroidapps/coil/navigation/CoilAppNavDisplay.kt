@@ -33,7 +33,7 @@ fun CoilAppNavDisplay() {
                     onNavigate = addToBackStack
                 )
 
-                is CoilAppNavKey.PhotoDetailScreen -> photoDetailScreen()
+                is CoilAppNavKey.PhotoDetailScreen -> photoDetailScreen(key)
             }
         } as (NavKey) -> NavEntry<NavKey>
     )
