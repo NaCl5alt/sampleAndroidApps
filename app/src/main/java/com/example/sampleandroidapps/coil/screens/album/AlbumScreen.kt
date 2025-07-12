@@ -1,11 +1,11 @@
 package com.example.sampleandroidapps.coil.screens.album
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.sampleandroidapps.coil.navigation.CoilAppNavKey
+import com.example.sampleandroidapps.coil.screens.album.section.AlbumItemSection
 import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
 import com.example.sampleandroidapps.ui.theme.SampleAndroidAppsTheme
 
@@ -34,13 +35,16 @@ private fun AlbumScreen(
     onNavigate: (CoilAppNavKey) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
-        Text(text = "Album Screen")
+    LazyColumn(modifier = modifier.fillMaxSize()) {
+        items(uiState.albumList) { album ->
+            AlbumItemSection(
+                album,
+                modifier = Modifier.clickable { onNavigate(CoilAppNavKey.PhotoScreen) }
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        TextButton(onClick = { onNavigate(CoilAppNavKey.PhotoScreen) }) {
-            Text("Go to PhotoScreen")
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
         }
     }
 }
