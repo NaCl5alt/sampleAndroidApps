@@ -2,6 +2,7 @@ package com.example.sampleandroidapps.coil.screens.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sampleandroidapps.network.cat.usecase.GetRandomCatImageUrlUseCase
 import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
 import com.example.sampleandroidapps.network.jsonPlaceholder.photo.Photo
 import com.example.sampleandroidapps.network.jsonPlaceholder.photo.usecase.GetPhotoListUseCase
@@ -35,6 +36,7 @@ data class PhotoScreenUiState(
 @HiltViewModel(assistedFactory = PhotoViewModel.Factory::class)
 class PhotoViewModel @AssistedInject constructor(
     private val getPhotoListUseCase: GetPhotoListUseCase,
+    private val getRandomCatImageUrlUseCase: GetRandomCatImageUrlUseCase,
     @Assisted
     private val album: Album
 ) : ViewModel() {
@@ -46,9 +48,23 @@ class PhotoViewModel @AssistedInject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getPhotoListUseCase(album.id).onSuccess { photoList ->
-                withContext(Dispatchers.Main) {
-                    _uiState.update { state ->
-                        _uiState.value.copy(photoList = photoList)
+                val replacedUrlPhotoList = mutableListOf<Photo>()
+
+                photoList.forEach { photo ->
+                    val url = getRandomCatImageUrlUseCase().getOrNull() ?: ""
+                    replacedUrlPhotoList.add(
+                        photo.copy(
+                            url = url,
+                            thumbnailUrl = url
+                        )
+                    )
+
+                    withContext(Dispatchers.Main) {
+                        _uiState.update { state ->
+                            _uiState.value.copy(
+                                photoList = replacedUrlPhotoList.toList()
+                            )
+                        }
                     }
                 }
             }
