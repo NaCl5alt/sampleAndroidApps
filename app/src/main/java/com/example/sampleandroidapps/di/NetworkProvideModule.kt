@@ -15,6 +15,13 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+
+@Qualifier
+annotation class JsonPlaceholderRetrofit
+
+@Qualifier
+annotation class CatApiRetrofit
+
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkProvideModule {
@@ -43,12 +50,6 @@ class NetworkProvideModule {
             }
             .build()
 
-    @Qualifier
-    annotation class JsonPlaceholderRetrofit
-
-    @Qualifier
-    annotation class CatApiRetrofit
-
     @JsonPlaceholderRetrofit
     @Singleton
     @Provides
@@ -58,7 +59,7 @@ class NetworkProvideModule {
         httpClient: OkHttpClient
     ): Retrofit =
         Retrofit.Builder()
-            .baseUrl("https://jsonplaceholder.typicode.com/")
+            .baseUrl("https://jsonplaceholder.typicode.com")
             .addConverterFactory(nullOnEmptyConverterFactory)
             .addConverterFactory(moshiConverterFactory)
             .client(httpClient)
@@ -73,7 +74,7 @@ class NetworkProvideModule {
         httpClient: OkHttpClient
     ): Retrofit =
         Retrofit.Builder()
-            .baseUrl("https://api.thecatapi.com/")
+            .baseUrl("https://api.thecatapi.com")
             .addConverterFactory(nullOnEmptyConverterFactory)
             .addConverterFactory(moshiConverterFactory)
             .client(httpClient)
