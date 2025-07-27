@@ -1,12 +1,17 @@
-package com.example.sampleandroidapps.di
+package com.example.sampleandroidapps.network.di
 
-import com.example.sampleandroidapps.BuildConfig
+import android.content.Context
+import coil3.ImageLoader
+import coil3.request.crossfade
+import coil3.util.DebugLogger
+import com.example.sampleandroidapps.network.BuildConfig
 import com.example.sampleandroidapps.util.NullOnEmptyConverterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -24,7 +29,7 @@ annotation class CatApiRetrofit
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkProvideModule {
+internal object NetworkProvideModule {
     @Singleton
     @Provides
     fun provideMoshiConverterFactory(): MoshiConverterFactory =
@@ -79,4 +84,18 @@ class NetworkProvideModule {
             .addConverterFactory(moshiConverterFactory)
             .client(httpClient)
             .build()
+
+    @Singleton
+    @Provides
+    fun provideImageLoader(
+        @ApplicationContext
+        context: Context
+    ): ImageLoader = ImageLoader.Builder(context)
+        .crossfade(true)
+        .apply {
+            if (BuildConfig.DEBUG) {
+                logger(DebugLogger())
+            }
+        }
+        .build()
 }

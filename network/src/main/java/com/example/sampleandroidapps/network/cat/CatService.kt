@@ -1,6 +1,6 @@
 package com.example.sampleandroidapps.network.cat
 
-import com.example.sampleandroidapps.di.CatApiRetrofit
+import com.example.sampleandroidapps.network.di.CatApiRetrofit
 import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Singleton

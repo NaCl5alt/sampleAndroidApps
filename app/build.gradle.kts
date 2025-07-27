@@ -45,6 +45,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":network"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -57,20 +58,7 @@ dependencies {
 
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
-    implementation(libs.kotlinx.serialization.core)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3.android)
-
-    implementation(libs.coil.compose)
-    implementation(libs.coil.okhttp)
-
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.moshi)
-
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
 
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)

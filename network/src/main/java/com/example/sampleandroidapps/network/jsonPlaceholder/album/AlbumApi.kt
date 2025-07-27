@@ -13,7 +13,7 @@ data class Album(
     val title: String
 )
 
-interface AlbumApi {
+internal interface AlbumApi {
     @GET("/albums")
     suspend fun getAlbums(): Response<List<Album>>
 }

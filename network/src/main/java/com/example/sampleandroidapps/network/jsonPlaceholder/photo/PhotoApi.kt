@@ -16,7 +16,7 @@ data class Photo(
     val thumbnailUrl: String
 )
 
-interface PhotoApi {
+internal interface PhotoApi {
     @GET("/albums/{albumId}/photos")
     suspend fun getPhotos(
         @Path("albumId") albumId: Int

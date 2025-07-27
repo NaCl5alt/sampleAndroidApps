@@ -1,6 +1,6 @@
 package com.example.sampleandroidapps.network.jsonPlaceholder.album
 
-import com.example.sampleandroidapps.di.JsonPlaceholderRetrofit
+import com.example.sampleandroidapps.network.di.JsonPlaceholderRetrofit
 import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
