@@ -23,3 +23,4 @@ rootProject.name = "sampleAndroidApps"
 include(":app")
 include(":core")
 include(":network")
+include(":feature:coil")
