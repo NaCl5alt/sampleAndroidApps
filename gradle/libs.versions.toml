@@ -24,6 +24,7 @@ appcompatVersion = "1.7.1"
 materialVersion = "1.12.0"
 ossLicensesPlugin = "0.10.6"
 ossLicensesPlayServices = "17.0.0"
+timber = "5.0.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -65,6 +66,8 @@ zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 
 oss-licenses-plugin = { module = "com.google.android.gms:oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
 oss-licenses-playservices = { module = "com.google.android.gms:play-services-oss-licenses", version.ref = "ossLicensesPlayServices" }
+
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
