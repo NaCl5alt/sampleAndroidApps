@@ -2,7 +2,6 @@ package com.example.sampleandroidapps.feature.coil.screens.photo
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,12 +40,14 @@ private fun PhotoScreen(
     onNavigate: (CoilAppNavKey) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Scaffold(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-    ) {
-        LazyColumn(modifier = modifier.fillMaxSize()) {
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             item {
                 Text(
                     text = uiState.album.title,

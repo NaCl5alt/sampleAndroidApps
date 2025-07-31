@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,22 +38,26 @@ private fun AlbumScreen(
     onNavigate: (CoilAppNavKey) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
+    Scaffold(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-    ) {
-        items(uiState.albumList) { album ->
-            AlbumItemSection(
-                album,
-                modifier = Modifier.clickable {
-                    onNavigate(CoilAppNavKey.PhotoScreen(album))
-                }
-            )
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            items(uiState.albumList) { album ->
+                AlbumItemSection(
+                    album,
+                    modifier = Modifier.clickable {
+                        onNavigate(CoilAppNavKey.PhotoScreen(album))
+                    }
+                )
 
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 4.dp)
-            )
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+            }
         }
     }
 }
