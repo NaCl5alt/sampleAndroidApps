@@ -85,7 +85,7 @@ private fun PhotoScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun PreviewPhotoScreen() {
     SampleAndroidAppsTheme {

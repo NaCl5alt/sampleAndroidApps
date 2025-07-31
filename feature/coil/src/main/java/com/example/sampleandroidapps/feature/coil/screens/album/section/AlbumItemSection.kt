@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,12 +38,14 @@ fun AlbumItemSection(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun PreviewAlbumItemSection() {
     SampleAndroidAppsTheme {
-        AlbumItemSection(
-            album = Album(1, 1, "title1")
-        )
+        Surface {
+            AlbumItemSection(
+                album = Album(1, 1, "title1")
+            )
+        }
     }
 }

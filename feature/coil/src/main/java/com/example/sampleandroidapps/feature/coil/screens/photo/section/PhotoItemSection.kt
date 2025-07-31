@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,18 +44,20 @@ fun PhotoItemSection(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun PreviewPhotoItemSection() {
     SampleAndroidAppsTheme {
-        PhotoItemSection(
-            photo = Photo(
-                albumId = 1,
-                id = 1,
-                title = "title",
-                url = "https://cdn2.thecatapi.com/images/MTgwMDcwNg.jpg",
-                thumbnailUrl = "https://cdn2.thecatapi.com/images/MTgwMDcwNg.jpg"
+        Surface {
+            PhotoItemSection(
+                photo = Photo(
+                    albumId = 1,
+                    id = 1,
+                    title = "title",
+                    url = "https://cdn2.thecatapi.com/images/MTgwMDcwNg.jpg",
+                    thumbnailUrl = "https://cdn2.thecatapi.com/images/MTgwMDcwNg.jpg"
+                )
             )
-        )
+        }
     }
 }

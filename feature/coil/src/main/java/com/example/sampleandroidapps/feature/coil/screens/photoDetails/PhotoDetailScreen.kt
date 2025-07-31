@@ -54,7 +54,7 @@ fun PhotoDetailScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun PreviewPhotoDetailScreen() {
     SampleAndroidAppsTheme {

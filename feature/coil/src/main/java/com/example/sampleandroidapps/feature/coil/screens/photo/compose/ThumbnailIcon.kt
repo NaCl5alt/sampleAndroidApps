@@ -74,7 +74,7 @@ fun ThumbnailIcon(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun PreviewThumbnailIcon() {
     SampleAndroidAppsTheme {
