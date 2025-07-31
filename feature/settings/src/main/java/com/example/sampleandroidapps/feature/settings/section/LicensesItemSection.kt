@@ -25,7 +25,7 @@ import com.example.sampleandroidapps.ui.theme.SampleAndroidAppsTheme
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
 @Composable
-fun LicensesColumn(modifier: Modifier = Modifier) {
+fun LicensesItemSection(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Column(
         modifier = modifier.clickable {
@@ -61,7 +61,7 @@ fun LicensesColumn(modifier: Modifier = Modifier) {
 private fun PreviewLicensesColumn() {
     SampleAndroidAppsTheme {
         Surface {
-            LicensesColumn()
+            LicensesItemSection()
         }
     }
 }

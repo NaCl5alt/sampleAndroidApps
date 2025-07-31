@@ -12,7 +12,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.sampleandroidapps.feature.settings.section.LicensesColumn
+import com.example.sampleandroidapps.feature.settings.section.LicensesItemSection
 import com.example.sampleandroidapps.ui.theme.SampleAndroidAppsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +36,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 .padding(innerPadding)
         ) {
             item {
-                LicensesColumn()
+                LicensesItemSection()
             }
         }
     }
