@@ -1,22 +1,26 @@
 package com.example.sampleandroidapps.feature.coil.screens.photo
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.sampleandroidapps.feature.coil.navigation.CoilAppNavKey
 import com.example.sampleandroidapps.feature.coil.screens.photo.section.PhotoItemSection
@@ -34,30 +38,42 @@ fun PhotoScreen(
     PhotoScreen(uiState, onNavigate, modifier)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PhotoScreen(
     uiState: PhotoScreenUiState,
     onNavigate: (CoilAppNavKey) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+
     Scaffold(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = uiState.album.title)
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            onBackPressedDispatcher?.onBackPressed()
+                        }
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = "onBack",
+                        )
+                    }
+                }
+            )
+        }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding)
         ) {
-            item {
-                Text(
-                    text = uiState.album.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp)
-                )
-
-                HorizontalDivider(modifier = Modifier.fillMaxWidth())
-            }
-
             items(uiState.photoList) { photo ->
                 PhotoItemSection(
                     photo, modifier = Modifier.clickable {
