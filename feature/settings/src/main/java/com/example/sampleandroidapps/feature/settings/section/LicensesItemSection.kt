@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -33,6 +32,7 @@ fun LicensesItemSection(modifier: Modifier = Modifier) {
         }
     ) {
         Row(
+            modifier = Modifier.padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Companion.CenterVertically
         ) {
@@ -49,8 +49,6 @@ fun LicensesItemSection(modifier: Modifier = Modifier) {
                 contentDescription = "Navigation to licenses screen"
             )
         }
-
-        Spacer(modifier = Modifier.Companion.height(2.dp))
 
         HorizontalDivider()
     }
