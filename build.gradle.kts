@@ -7,3 +7,13 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
+
+buildscript {
+    repositories {
+        google()
+    }
+
+    dependencies {
+        classpath(libs.oss.licenses.plugin)
+    }
+}
