@@ -1,9 +1,11 @@
 package com.example.sampleandroidapps.network.cat
 
+import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.GET
 
+@Keep
 @JsonClass(generateAdapter = false)
 data class Cat(
     val id: String,
