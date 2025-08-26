@@ -18,8 +18,8 @@ android {
         applicationId = "com.example.sampleandroidapps"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = (properties.getOrDefault("versionCode", "1") as String).toInt()
+        versionName = properties.getOrDefault("versionName", "1.0.0") as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
