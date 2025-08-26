@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.GET
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class Cat(
     val id: String,
     val url: String,

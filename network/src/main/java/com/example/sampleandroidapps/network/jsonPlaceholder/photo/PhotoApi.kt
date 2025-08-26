@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 @Serializable
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class Photo(
     val albumId: Int,
     val id: Int,

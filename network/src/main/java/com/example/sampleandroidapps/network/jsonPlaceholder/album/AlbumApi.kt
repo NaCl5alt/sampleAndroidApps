@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 @Serializable
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class Album(
     val userId: Int,
     val id: Int,
