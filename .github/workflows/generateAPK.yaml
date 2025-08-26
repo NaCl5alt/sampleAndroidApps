@@ -1,0 +1,56 @@
+name: build release apk
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'Version Name (例: v1.0.1)'
+        required: true
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up JDK 1.17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      - name: build Release on workflow_dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: ./gradlew assembleRelease -PversionName=${{ github.event.inputs.version_name }} -PversionCode=${{ github.run_number }}
+      - name: build Release on tag push
+        if: github.event_name != 'workflow_dispatch'
+        run: ./gradlew assembleRelease -PversionName=${{ github.ref_name }} -PversionCode=${{ github.run_number }}
+      - name: Sign app APK
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{github.ref_name}}.apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+      - name: Upload APK to Release
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          mv ${{steps.sign_app.outputs.signedReleaseFile}} ./${{github.ref_name}}.apk
+          gh release upload ${{github.ref_name}} ./${{github.ref_name}}.apk --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
