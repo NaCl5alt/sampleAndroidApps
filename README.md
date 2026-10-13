@@ -17,7 +17,34 @@ Androidの主要技術を実践的に学びながら、再利用・拡張がし�
 - **ログ**：Timber
 
 ## アーキテクチャ構成
-- Todo: 図を作って載せる（Clean Architectureも意識したMVVMとモジュール構成の関係性を簡略図で示す予定）
+### モジュール構成
+矢印は依存の向き（依存する側 → 依存される側）です。
+
+```mermaid
+graph TD
+    app[":app<br/>Application・MainActivity"]
+    coil[":feature:coil<br/>画像アルバム<br/>（Album → Photo → PhotoDetail）"]
+    settings[":feature:settings<br/>設定・OSSライセンス表示"]
+    network[":network<br/>Retrofit + Moshi・UseCase"]
+    core[":core<br/>Theme・共通処理"]
+    app --> coil
+    app --> network
+    app --> core
+    coil --> settings
+    coil --> network
+    coil --> core
+    settings --> core
+    network --> core
+```
+
+### 画面からAPIまでの流れ（MVVM）
+```mermaid
+graph LR
+    screen["Screen<br/>（Jetpack Compose）"] -- "StateFlow を購読" --> vm["ViewModel<br/>（Hilt）"]
+    vm --> usecase["UseCase<br/>（:network）"]
+    usecase --> service["Service<br/>（Retrofit）"]
+    service --> api["JSONPlaceholder / TheCatAPI"]
+```
 
 ## 開発方針
 - なるべくシンプルで応用が想像しやすいようなミニマルな機能を持つミニアプリを複数内包したアプリであること
