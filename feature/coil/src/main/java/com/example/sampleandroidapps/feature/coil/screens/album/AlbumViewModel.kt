@@ -2,9 +2,11 @@ package com.example.sampleandroidapps.feature.coil.screens.album
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sampleandroidapps.feature.coil.di.IoDispatcher
 import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
 import com.example.sampleandroidapps.network.jsonPlaceholder.album.usecase.GetAlbumListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,13 +25,15 @@ data class AlbumScreenUiState(
 
 @HiltViewModel
 class AlbumViewModel @Inject constructor(
-    private val getAlbumListUseCase: GetAlbumListUseCase
+    private val getAlbumListUseCase: GetAlbumListUseCase,
+    @param:IoDispatcher
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AlbumScreenUiState.default)
     val uiState: StateFlow<AlbumScreenUiState> = _uiState
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             getAlbumListUseCase().onSuccess { albumList ->
                 withContext(Dispatchers.Main) {
                     _uiState.update { state ->

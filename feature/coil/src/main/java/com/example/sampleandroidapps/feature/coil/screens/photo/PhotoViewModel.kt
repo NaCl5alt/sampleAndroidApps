@@ -2,6 +2,7 @@ package com.example.sampleandroidapps.feature.coil.screens.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sampleandroidapps.feature.coil.di.IoDispatcher
 import com.example.sampleandroidapps.network.cat.usecase.GetRandomCatImageUrlUseCase
 import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
 import com.example.sampleandroidapps.network.jsonPlaceholder.photo.Photo
@@ -10,6 +11,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +39,8 @@ data class PhotoScreenUiState(
 class PhotoViewModel @AssistedInject constructor(
     private val getPhotoListUseCase: GetPhotoListUseCase,
     private val getRandomCatImageUrlUseCase: GetRandomCatImageUrlUseCase,
+    @param:IoDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
     @Assisted
     private val album: Album
 ) : ViewModel() {
@@ -46,7 +50,7 @@ class PhotoViewModel @AssistedInject constructor(
     val uiState: StateFlow<PhotoScreenUiState> = _uiState
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             getPhotoListUseCase(album.id).onSuccess { photoList ->
                 val replacedUrlPhotoList = mutableListOf<Photo>()
 
