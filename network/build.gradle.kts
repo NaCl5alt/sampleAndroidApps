@@ -44,6 +44,10 @@ dependencies {
 
     api(libs.coil.compose)
     implementation(libs.coil.okhttp)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.okhttp.mockwebserver)
 }
 
 tasks.withType<KotlinJvmCompile>().configureEach {
