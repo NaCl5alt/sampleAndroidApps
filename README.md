@@ -1,3 +1,5 @@
+[![unit test](https://github.com/NaCl5alt/sampleAndroidApps/actions/workflows/unitTest.yaml/badge.svg)](https://github.com/NaCl5alt/sampleAndroidApps/actions/workflows/unitTest.yaml)
+
 # 📌 このアプリの目的
 Androidの主要技術を実践的に学びながら、再利用・拡張がしやすいモジュール設計を試すための技術検証用サンプルアプリです。
 自分だけでなく他者にも参考にしてもらえるようなアプリとなっていれば嬉しいです。
@@ -18,6 +20,7 @@ Androidの主要技術を実践的に学びながら、再利用・拡張がし�
 - **画面遷移**：Jetpack Navigation3
 - **ライセンス管理**：OSS Licenses Plugin
 - **ログ**：Timber
+- **テスト**：JUnit4, MockK, kotlinx-coroutines-test, MockWebServer
 
 ## アーキテクチャ構成
 ### モジュール構成
@@ -113,6 +116,22 @@ cd sampleAndroidApps
 	- 現状はなし
 	- ミニアプリが複数になり、ミニアプリ別にアプリ化ができるようになったら必要になる予定
 
+# ✅ テスト
+ViewModel・UseCase・共通処理にユニットテストを用意しています。GitHub Actions でコードを push するたびに実行しています。
+
+| 対象 | 確認していること | 使っているもの |
+|:---|:---|:---|
+| ViewModel（`:feature:coil`） | UseCase の結果が UiState に反映されるか、失敗したときの振る舞い | MockK, kotlinx-coroutines-test |
+| UseCase（`:network`） | リクエストのパス、JSON のパース、HTTP エラーのときに失敗を返すか | MockWebServer |
+| 共通処理（`:core`） | Retrofit の Response を Result に変換する処理、空のボディを null にする Converter | JUnit4 |
+
+- ViewModel には IO 用の Dispatcher を Hilt で注入しているので、テストでは TestDispatcher に差し替えて非同期処理を順番どおりに検証しています
+- UseCase のテストは MockWebServer に本番と同じ Converter で接続し、API の呼び方とパースまで確認しています
+
+```bash
+./gradlew testDebugUnitTest
+```
+
 # 🚧 今後の予定
 - 実装予定の機能
 	- MPAndroidChartチャートミニアプリ
@@ -124,7 +143,6 @@ cd sampleAndroidApps
 	- GitHub ActionsでのAPK自動生成
 	- マルチディメンジョンによるマルチアプリ化
 	- GitHub ActionsでのktlintとDangerによるPRレビュー
-	- UnitTest導入
 
 # 🗒️ 補足
 - 参考にしたリポジトリや記事
