@@ -5,7 +5,10 @@ Androidの主要技術を実践的に学びながら、再利用・拡張がし�
 # 🏗️ 機能一覧
 このアプリは複数の技術検証を目的とした「ミニアプリ集」として構成されており、現在は以下の機能を実装：
 - Retrofit + Moshi + Coilを使った画像アルバム表示機能
-	- スクショ貼る予定
+
+| アルバム一覧 | 写真一覧 | 写真詳細 |
+|:---:|:---:|:---:|
+| <img src="docs/images/01-album.png" width="240" alt="アルバム一覧の画面"> | <img src="docs/images/02-photos.png" width="240" alt="写真一覧の画面"> | <img src="docs/images/03-detail.png" width="240" alt="写真詳細の画面"> |
 
 # ⚙️ 技術スタック
 ## 使用技術
