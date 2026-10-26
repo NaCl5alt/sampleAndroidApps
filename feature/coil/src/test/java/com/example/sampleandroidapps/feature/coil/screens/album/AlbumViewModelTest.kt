@@ -1,10 +1,9 @@
 package com.example.sampleandroidapps.feature.coil.screens.album
 
 import com.example.sampleandroidapps.feature.coil.MainDispatcherRule
+import com.example.sampleandroidapps.feature.coil.fake.FakeAlbumRepository
 import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
 import com.example.sampleandroidapps.network.jsonPlaceholder.album.usecase.GetAlbumListUseCase
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -18,21 +17,22 @@ class AlbumViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val getAlbumListUseCase: GetAlbumListUseCase = mockk()
+    private val albumRepository = FakeAlbumRepository()
 
     private val albumList = listOf(
         Album(userId = 1, id = 1, title = "quidem molestiae enim"),
         Album(userId = 1, id = 2, title = "sunt qui excepturi placeat culpa"),
     )
 
+    // 本物の UseCase にフェイクの Repository を渡して組み立てる
     private fun createViewModel() = AlbumViewModel(
-        getAlbumListUseCase = getAlbumListUseCase,
+        getAlbumListUseCase = GetAlbumListUseCase(albumRepository),
         ioDispatcher = mainDispatcherRule.testDispatcher,
     )
 
     @Test
     fun `アルバム一覧の取得が終わるまではUiStateは初期値のまま`() = runTest {
-        coEvery { getAlbumListUseCase() } returns Result.success(albumList)
+        albumRepository.result = Result.success(albumList)
 
         val viewModel = createViewModel()
 
@@ -41,7 +41,7 @@ class AlbumViewModelTest {
 
     @Test
     fun `アルバム一覧の取得に成功するとUiStateに反映される`() = runTest {
-        coEvery { getAlbumListUseCase() } returns Result.success(albumList)
+        albumRepository.result = Result.success(albumList)
 
         val viewModel = createViewModel()
         advanceUntilIdle()
@@ -51,7 +51,7 @@ class AlbumViewModelTest {
 
     @Test
     fun `アルバム一覧の取得に失敗したときはUiStateが空のまま`() = runTest {
-        coEvery { getAlbumListUseCase() } returns Result.failure(IOException("Internal Server Error"))
+        albumRepository.result = Result.failure(IOException("Internal Server Error"))
 
         val viewModel = createViewModel()
         advanceUntilIdle()

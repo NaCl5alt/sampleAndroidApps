@@ -1,13 +1,13 @@
 package com.example.sampleandroidapps.feature.coil.screens.photo
 
 import com.example.sampleandroidapps.feature.coil.MainDispatcherRule
+import com.example.sampleandroidapps.feature.coil.fake.FakeCatImageRepository
+import com.example.sampleandroidapps.feature.coil.fake.FakePhotoRepository
+import com.example.sampleandroidapps.network.cat.Cat
 import com.example.sampleandroidapps.network.cat.usecase.GetRandomCatImageUrlUseCase
 import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
 import com.example.sampleandroidapps.network.jsonPlaceholder.photo.Photo
 import com.example.sampleandroidapps.network.jsonPlaceholder.photo.usecase.GetPhotoListUseCase
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -21,8 +21,8 @@ class PhotoViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val getPhotoListUseCase: GetPhotoListUseCase = mockk()
-    private val getRandomCatImageUrlUseCase: GetRandomCatImageUrlUseCase = mockk()
+    private val photoRepository = FakePhotoRepository()
+    private val catImageRepository = FakeCatImageRepository()
 
     private val album = Album(userId = 1, id = 3, title = "omnis laborum odio")
     private val photoList = listOf(
@@ -41,20 +41,22 @@ class PhotoViewModelTest {
             thumbnailUrl = "https://via.placeholder.com/150/a393af",
         ),
     )
-    private val catImageUrl1 = "https://cdn2.thecatapi.com/images/a1.jpg"
-    private val catImageUrl2 = "https://cdn2.thecatapi.com/images/b2.jpg"
+    private val cat1 = Cat(id = "a1", url = "https://cdn2.thecatapi.com/images/a1.jpg", width = 500, height = 375)
+    private val cat2 = Cat(id = "b2", url = "https://cdn2.thecatapi.com/images/b2.jpg", width = 640, height = 480)
 
+    // 本物の UseCase にフェイクの Repository を渡して組み立てる
     private fun createViewModel() = PhotoViewModel(
-        getPhotoListUseCase = getPhotoListUseCase,
-        getRandomCatImageUrlUseCase = getRandomCatImageUrlUseCase,
+        getPhotoListUseCase = GetPhotoListUseCase(photoRepository),
+        getRandomCatImageUrlUseCase = GetRandomCatImageUrlUseCase(catImageRepository),
         ioDispatcher = mainDispatcherRule.testDispatcher,
         album = album,
     )
 
     @Test
     fun `UiStateの初期値には画面に渡されたアルバムが入る`() = runTest {
-        coEvery { getPhotoListUseCase(album.id) } returns Result.success(photoList)
-        coEvery { getRandomCatImageUrlUseCase() } returns Result.success(catImageUrl1)
+        photoRepository.result = Result.success(photoList)
+        catImageRepository.enqueue(Result.success(listOf(cat1)))
+        catImageRepository.enqueue(Result.success(listOf(cat2)))
 
         val viewModel = createViewModel()
 
@@ -66,39 +68,35 @@ class PhotoViewModelTest {
 
     @Test
     fun `写真ごとに猫の画像URLへ差し替えた一覧がUiStateに入る`() = runTest {
-        coEvery { getPhotoListUseCase(album.id) } returns Result.success(photoList)
-        coEvery { getRandomCatImageUrlUseCase() } returnsMany listOf(
-            Result.success(catImageUrl1),
-            Result.success(catImageUrl2),
-        )
+        photoRepository.result = Result.success(photoList)
+        catImageRepository.enqueue(Result.success(listOf(cat1)))
+        catImageRepository.enqueue(Result.success(listOf(cat2)))
 
         val viewModel = createViewModel()
         advanceUntilIdle()
 
         assertEquals(
             listOf(
-                photoList[0].copy(url = catImageUrl1, thumbnailUrl = catImageUrl1),
-                photoList[1].copy(url = catImageUrl2, thumbnailUrl = catImageUrl2),
+                photoList[0].copy(url = cat1.url, thumbnailUrl = cat1.url),
+                photoList[1].copy(url = cat2.url, thumbnailUrl = cat2.url),
             ),
             viewModel.uiState.value.photoList,
         )
-        coVerify(exactly = 1) { getPhotoListUseCase(album.id) }
+        assertEquals(listOf(album.id), photoRepository.requestedAlbumIds)
     }
 
     @Test
     fun `猫の画像URLの取得に失敗した写真はURLが空文字になる`() = runTest {
-        coEvery { getPhotoListUseCase(album.id) } returns Result.success(photoList)
-        coEvery { getRandomCatImageUrlUseCase() } returnsMany listOf(
-            Result.success(catImageUrl1),
-            Result.failure(IOException("Too Many Requests")),
-        )
+        photoRepository.result = Result.success(photoList)
+        catImageRepository.enqueue(Result.success(listOf(cat1)))
+        catImageRepository.enqueue(Result.failure(IOException("Too Many Requests")))
 
         val viewModel = createViewModel()
         advanceUntilIdle()
 
         assertEquals(
             listOf(
-                photoList[0].copy(url = catImageUrl1, thumbnailUrl = catImageUrl1),
+                photoList[0].copy(url = cat1.url, thumbnailUrl = cat1.url),
                 photoList[1].copy(url = "", thumbnailUrl = ""),
             ),
             viewModel.uiState.value.photoList,
@@ -107,12 +105,12 @@ class PhotoViewModelTest {
 
     @Test
     fun `写真一覧の取得に失敗したときは猫の画像URLを取得しない`() = runTest {
-        coEvery { getPhotoListUseCase(album.id) } returns Result.failure(IOException("Not Found"))
+        photoRepository.result = Result.failure(IOException("Not Found"))
 
         val viewModel = createViewModel()
         advanceUntilIdle()
 
         assertEquals(emptyList<Photo>(), viewModel.uiState.value.photoList)
-        coVerify(exactly = 0) { getRandomCatImageUrlUseCase() }
+        assertEquals(0, catImageRepository.callCount)
     }
 }

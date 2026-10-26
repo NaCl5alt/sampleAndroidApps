@@ -26,7 +26,6 @@ ossLicensesPlugin = "0.10.6"
 ossLicensesPlayServices = "17.0.0"
 timber = "5.0.1"
 kotlinxCoroutines = "1.10.2"
-mockk = "1.14.5"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -73,7 +72,6 @@ oss-licenses-playservices = { module = "com.google.android.gms:play-services-oss
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

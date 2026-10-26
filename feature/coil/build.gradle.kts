@@ -48,7 +48,6 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
 }
 
 tasks.withType<KotlinJvmCompile>().configureEach {
