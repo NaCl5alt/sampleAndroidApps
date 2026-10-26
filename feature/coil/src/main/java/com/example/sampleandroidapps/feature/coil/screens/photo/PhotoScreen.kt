@@ -17,11 +17,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sampleandroidapps.feature.coil.navigation.CoilAppNavKey
 import com.example.sampleandroidapps.feature.coil.screens.photo.section.PhotoItemSection
 import com.example.sampleandroidapps.network.jsonPlaceholder.photo.Photo
@@ -33,7 +33,7 @@ fun PhotoScreen(
     modifier: Modifier = Modifier,
     viewModel: PhotoViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     PhotoScreen(uiState, onNavigate, modifier)
 }
