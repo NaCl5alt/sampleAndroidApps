@@ -1,8 +1,6 @@
-package com.example.sampleandroidapps.network.jsonPlaceholder.album.usecase
+package com.example.sampleandroidapps.network.jsonPlaceholder.album
 
 import com.example.sampleandroidapps.network.createRetrofit
-import com.example.sampleandroidapps.network.jsonPlaceholder.album.Album
-import com.example.sampleandroidapps.network.jsonPlaceholder.album.AlbumService
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -13,14 +11,14 @@ import org.junit.Before
 import org.junit.Test
 import java.io.IOException
 
-class GetAlbumListUseCaseTest {
+class DefaultAlbumRepositoryTest {
     private val server = MockWebServer()
-    private lateinit var useCase: GetAlbumListUseCase
+    private lateinit var repository: DefaultAlbumRepository
 
     @Before
     fun setUp() {
         server.start()
-        useCase = GetAlbumListUseCase(AlbumService(server.createRetrofit()))
+        repository = DefaultAlbumRepository(AlbumService(server.createRetrofit()))
     }
 
     @After
@@ -41,7 +39,7 @@ class GetAlbumListUseCaseTest {
             )
         )
 
-        val result = useCase()
+        val result = repository.getAlbums()
 
         assertEquals(
             listOf(
@@ -59,7 +57,7 @@ class GetAlbumListUseCaseTest {
     fun `HTTPエラーのときはIOExceptionで失敗を返す`() = runTest {
         server.enqueue(MockResponse().setResponseCode(500))
 
-        val result = useCase()
+        val result = repository.getAlbums()
 
         assertTrue(result.exceptionOrNull() is IOException)
     }

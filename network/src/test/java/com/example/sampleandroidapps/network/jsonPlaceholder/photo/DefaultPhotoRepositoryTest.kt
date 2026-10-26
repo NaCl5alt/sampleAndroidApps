@@ -1,8 +1,6 @@
-package com.example.sampleandroidapps.network.jsonPlaceholder.photo.usecase
+package com.example.sampleandroidapps.network.jsonPlaceholder.photo
 
 import com.example.sampleandroidapps.network.createRetrofit
-import com.example.sampleandroidapps.network.jsonPlaceholder.photo.Photo
-import com.example.sampleandroidapps.network.jsonPlaceholder.photo.PhotoService
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -13,14 +11,14 @@ import org.junit.Before
 import org.junit.Test
 import java.io.IOException
 
-class GetPhotoListUseCaseTest {
+class DefaultPhotoRepositoryTest {
     private val server = MockWebServer()
-    private lateinit var useCase: GetPhotoListUseCase
+    private lateinit var repository: DefaultPhotoRepository
 
     @Before
     fun setUp() {
         server.start()
-        useCase = GetPhotoListUseCase(PhotoService(server.createRetrofit()))
+        repository = DefaultPhotoRepository(PhotoService(server.createRetrofit()))
     }
 
     @After
@@ -46,7 +44,7 @@ class GetPhotoListUseCaseTest {
             )
         )
 
-        val result = useCase(albumId = 3)
+        val result = repository.getPhotos(albumId = 3)
 
         assertEquals(
             listOf(
@@ -67,7 +65,7 @@ class GetPhotoListUseCaseTest {
     fun `HTTPエラーのときはIOExceptionで失敗を返す`() = runTest {
         server.enqueue(MockResponse().setResponseCode(404))
 
-        val result = useCase(albumId = 999)
+        val result = repository.getPhotos(albumId = 999)
 
         assertTrue(result.exceptionOrNull() is IOException)
     }

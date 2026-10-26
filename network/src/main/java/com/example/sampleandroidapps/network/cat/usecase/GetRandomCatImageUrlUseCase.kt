@@ -1,24 +1,19 @@
 package com.example.sampleandroidapps.network.cat.usecase
 
-import com.example.sampleandroidapps.network.cat.CatService
-import com.example.sampleandroidapps.util.NetworkUseCase
+import com.example.sampleandroidapps.network.cat.CatImageRepository
 import javax.inject.Inject
 
 class GetRandomCatImageUrlUseCase @Inject constructor(
-    private val catService: CatService
-) : NetworkUseCase() {
+    private val catImageRepository: CatImageRepository
+) {
     /**
      * 猫の画像のURLを取得するUseCase
-     * 失敗した場合は、IOExceptionをResult.failureで返す
+     * 取得した一覧の1件目のURLを返す。取得に失敗した場合はその失敗を、一覧が空の場合は NoSuchElementException を Result.failure で返す
      */
     suspend operator fun invoke(): Result<String> {
-        val apiResult = apiResult { catService.getCatImage() }
-
-        if (apiResult.isFailure) return Result.failure(apiResult.exceptionOrNull()!!)
-
-        val catData = apiResult.getOrNull()?.firstOrNull()
-
-        return if (catData == null) Result.failure(Exception("catData is null"))
-        else Result.success(catData.url)
+        val catList = catImageRepository.getCatImages().getOrElse { return Result.failure(it) }
+        val cat = catList.firstOrNull()
+            ?: return Result.failure(NoSuchElementException("cat image list is empty"))
+        return Result.success(cat.url)
     }
 }
