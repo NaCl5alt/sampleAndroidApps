@@ -65,7 +65,7 @@ class PhotoViewModel @AssistedInject constructor(
 
                     withContext(Dispatchers.Main) {
                         _uiState.update { state ->
-                            _uiState.value.copy(
+                            state.copy(
                                 photoList = replacedUrlPhotoList.toList()
                             )
                         }
