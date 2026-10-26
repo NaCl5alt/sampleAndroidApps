@@ -20,7 +20,7 @@ Androidの主要技術を実践的に学びながら、再利用・拡張がし�
 - **画面遷移**：Jetpack Navigation3
 - **ライセンス管理**：OSS Licenses Plugin
 - **ログ**：Timber
-- **テスト**：JUnit4, MockK, kotlinx-coroutines-test, MockWebServer
+- **テスト**：JUnit4, kotlinx-coroutines-test, MockWebServer（モックライブラリは使わず、フェイクで差し替え）
 
 ## アーキテクチャ構成
 ### モジュール構成
@@ -31,7 +31,7 @@ graph TD
     app[":app<br/>Application・MainActivity"]
     coil[":feature:coil<br/>画像アルバム<br/>（Album → Photo → PhotoDetail）"]
     settings[":feature:settings<br/>設定・OSSライセンス表示"]
-    network[":network<br/>Retrofit + Moshi・UseCase"]
+    network[":network<br/>データレイヤ（Repository・Retrofit + Moshi）・UseCase"]
     core[":core<br/>Theme・共通処理"]
     app --> coil
     app --> network
@@ -46,11 +46,24 @@ graph TD
 ### 画面からAPIまでの流れ（MVVM）
 ```mermaid
 graph LR
-    screen["Screen<br/>（Jetpack Compose）"] -- "StateFlow を購読" --> vm["ViewModel<br/>（Hilt）"]
+    screen["Screen<br/>（Jetpack Compose）"] -- "StateFlow を collectAsStateWithLifecycle で購読" --> vm["ViewModel<br/>（Hilt）"]
     vm --> usecase["UseCase<br/>（:network）"]
-    usecase --> service["Service<br/>（Retrofit）"]
+    usecase --> repository["Repository<br/>（:network）"]
+    repository --> service["Service<br/>（Retrofit）"]
     service --> api["JSONPlaceholder / TheCatAPI"]
 ```
+
+### Android 公式のアーキテクチャの推奨事項との対応
+[Android アーキテクチャに関する推奨事項](https://developer.android.com/topic/architecture/recommendations?hl=ja)のうち、主に次の項目に沿っています。
+
+| 推奨事項 | このリポジトリでの対応 |
+|:---|:---|
+| データレイヤのデータは Repository で公開する（強く推奨） | `AlbumRepository` などのインターフェースを公開し、Retrofit の呼び出しは `:network` の中の実装クラスに閉じる |
+| ライフサイクルを考慮して UI の状態を収集する（強く推奨） | 画面は ViewModel の StateFlow を `collectAsStateWithLifecycle()` で購読する |
+| 単一 Activity のアプリにする（強く推奨） | 画面遷移は Navigation 3 の `NavDisplay` にまとめ、設定画面も同じ Activity の中の画面にする（OSS ライセンスの一覧だけはライブラリの Activity） |
+| 単方向データフロー・画面単位の ViewModel（強く推奨） | ViewModel が UiState を StateFlow で公開し、画面は描画と操作の通知だけを行う |
+| 依存関係の注入（強く推奨）・Hilt（推奨） | Hilt で注入する。IO 用の Dispatcher も注入し、テストでは TestDispatcher に差し替える |
+| モックよりフェイクを使う（強く推奨） | ViewModel と UseCase のテストは、フェイクの Repository で組み立てる |
 
 ## 開発方針
 - なるべくシンプルで応用が想像しやすいようなミニマルな機能を持つミニアプリを複数内包したアプリであること
@@ -80,11 +93,11 @@ graph LR
 					- :network
 					- :feature:settings
 			- /settings
-				- OSSライセンスの表記を行う画面への遷移を行うための設定画面機能
+				- OSSライセンスの表記を行う画面への遷移を行うための設定画面機能（`:feature:coil` の Navigation 3 から1つの画面として表示）
 				- 依存モジュール
 					- :core
 	- /network
-		- ホスト毎にディレクトリを作成し、APIを利用するためのUseCaseを作成
+		- ホスト毎にディレクトリを作成し、Retrofit の Service（データソース）、それを包む Repository（データレイヤの入口）、Repository を使う UseCase を配置
 			- UseCaseは本来、/feature内の該当するミニアプリのディレクトリ内部に配置するのが良いと思うが、現時点ではUseCase内の処理がミニアプリに固有の処理が含まれていないため、こちらに配置
 		- 依存モジュール
 			- :core
@@ -117,16 +130,18 @@ cd sampleAndroidApps
 	- ミニアプリが複数になり、ミニアプリ別にアプリ化ができるようになったら必要になる予定
 
 # ✅ テスト
-ViewModel・UseCase・共通処理にユニットテストを用意しています。GitHub Actions でコードを push するたびに実行しています。
+ViewModel・UseCase・Repository・共通処理にユニットテストを用意しています。GitHub Actions でコードを push するたびに実行しています。
 
 | 対象 | 確認していること | 使っているもの |
 |:---|:---|:---|
-| ViewModel（`:feature:coil`） | UseCase の結果が UiState に反映されるか、失敗したときの振る舞い | MockK, kotlinx-coroutines-test |
-| UseCase（`:network`） | リクエストのパス、JSON のパース、HTTP エラーのときに失敗を返すか | MockWebServer |
-| 共通処理（`:core`） | Retrofit の Response を Result に変換する処理、空のボディを null にする Converter | JUnit4 |
+| ViewModel（`:feature:coil`） | UseCase の結果が UiState に反映されるか、失敗したときの振る舞い | フェイクの Repository, kotlinx-coroutines-test |
+| UseCase（`:network`） | 猫の画像の一覧から1件目の URL を取り出す処理と、失敗の伝え方 | フェイクの Repository |
+| Repository（`:network`） | リクエストのパス、JSON のパース、HTTP エラーのときに失敗を返すか | MockWebServer |
+| 共通処理（`:core`） | Retrofit の Response を Result に変換する処理（通信の失敗も例外にせず Result で返す）、空のボディを null にする Converter | JUnit4 |
 
+- ViewModel のテストは、本物の UseCase にフェイクの Repository を渡して組み立てています（モックライブラリは使っていません）
 - ViewModel には IO 用の Dispatcher を Hilt で注入しているので、テストでは TestDispatcher に差し替えて非同期処理を順番どおりに検証しています
-- UseCase のテストは MockWebServer に本番と同じ Converter で接続し、API の呼び方とパースまで確認しています
+- Repository のテストは MockWebServer に本番と同じ Converter で接続し、API の呼び方とパースまで確認しています
 
 ```bash
 ./gradlew testDebugUnitTest
@@ -140,7 +155,6 @@ ViewModel・UseCase・共通処理にユニットテストを用意していま�
 	- Bluetoothを用いたアプリ
 	- USBを用いたアプリ
 - リファクタ予定や改善したい点
-	- GitHub ActionsでのAPK自動生成
 	- マルチディメンジョンによるマルチアプリ化
 	- GitHub ActionsでのktlintとDangerによるPRレビュー
 
@@ -150,7 +164,7 @@ ViewModel・UseCase・共通処理にユニットテストを用意していま�
 	- [DroidKaigi/conference-app-2023](https://github.com/DroidKaigi/conference-app-2023)
 - 開発中に気づいたこと・工夫した点
 	- ミニアプリ毎にモジュール分割をすることによって、将来的に個別にアプリ化が行いやすくするようにしました
-	- 最新のJetpack Navigation3を用いて画面遷移処理を実装しました
+	- 最新のJetpack Navigation3を用いて画面遷移処理を実装しました（設定画面も含めて、1つの Activity の中で遷移します）
 
 # 📚 ライセンス
 このリポジトリは MIT ライセンスのもとで公開されており、商用利用・改変・再配布を自由に許可しています。
