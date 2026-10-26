@@ -13,6 +13,7 @@ import com.example.sampleandroidapps.feature.coil.screens.album.AlbumScreen
 import com.example.sampleandroidapps.feature.coil.screens.photo.PhotoScreen
 import com.example.sampleandroidapps.feature.coil.screens.photo.PhotoViewModel
 import com.example.sampleandroidapps.feature.coil.screens.photoDetails.PhotoDetailScreen
+import com.example.sampleandroidapps.feature.settings.SettingsScreen
 
 @Composable
 fun CoilAppNavDisplay() {
@@ -44,6 +45,11 @@ fun CoilAppNavDisplay() {
 
                 is CoilAppNavKey.PhotoDetailScreen -> NavEntry(key) {
                     PhotoDetailScreen(key.photo)
+                }
+
+                // 設定画面も別の Activity にせず、同じ NavDisplay の画面として表示する
+                CoilAppNavKey.SettingsScreen -> NavEntry(key) {
+                    SettingsScreen()
                 }
             }
         } as (NavKey) -> NavEntry<NavKey>

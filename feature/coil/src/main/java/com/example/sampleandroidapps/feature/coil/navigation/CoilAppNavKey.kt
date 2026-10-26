@@ -14,4 +14,7 @@ sealed interface CoilAppNavKey : NavKey {
 
     @Serializable
     data class PhotoDetailScreen(val photo: Photo) : CoilAppNavKey
+
+    @Serializable
+    data object SettingsScreen : CoilAppNavKey
 }
