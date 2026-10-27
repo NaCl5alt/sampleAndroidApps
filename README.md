@@ -21,6 +21,7 @@ Androidの主要技術を実践的に学びながら、再利用・拡張がし�
 - **ライセンス管理**：OSS Licenses Plugin
 - **ログ**：Timber
 - **テスト**：JUnit4, kotlinx-coroutines-test, MockWebServer（モックライブラリは使わず、フェイクで差し替え）
+- **依存関係の更新**：Dependabot（Gradle のライブラリ・プラグインと GitHub Actions を毎週確認し、更新の PR を CI で検証）
 
 ## アーキテクチャ構成
 ### モジュール構成
@@ -114,8 +115,8 @@ graph LR
 
 # 🧪 環境構築ガイド
 - Android Studioのバージョン
-	- `Android Studio Narwhal | 2025.1.1 Build #AI-251.25410.109.2511.13665796, built on June 19, 2025`で動作確認済み
-- JDKバージョン：17 （Android Studio Narwhal に付属のものを使用）
+	- Android Gradle Plugin 9.4 を使っているので、`Android Studio Quail 4 | 2026.1.4` 以降が必要
+- JDKバージョン：17 以上（GitHub Actions では Temurin 17 でビルド）
 - `.env` や APIキーの有無（あれば記載）
 	- 現状はなし
 	- リリースビルドができるようにしたら、.envファイルが必要となる予定
