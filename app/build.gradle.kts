@@ -1,9 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -12,14 +8,15 @@ plugins {
 
 android {
     namespace = "com.example.sampleandroidapps"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.sampleandroidapps"
         minSdk = 24
         targetSdk = 36
-        versionCode = (properties.getOrDefault("versionCode", "1") as String).toInt()
-        versionName = properties.getOrDefault("versionName", "1.0.0") as String
+        // CI から -PversionCode・-PversionName で渡す（Gradle 9 で非推奨になった Project.properties は使わない）
+        versionCode = providers.gradleProperty("versionCode").getOrElse("1").toInt()
+        versionName = providers.gradleProperty("versionName").getOrElse("1.0.0")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,6 +47,7 @@ dependencies {
     implementation(project(":network"))
     implementation(project(":feature:coil"))
 
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.hilt.android)
@@ -64,11 +62,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-}
-
-tasks.withType<KotlinJvmCompile>().configureEach {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
-        freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
-    }
 }
