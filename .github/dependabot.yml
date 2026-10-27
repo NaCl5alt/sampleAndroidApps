@@ -1,0 +1,48 @@
+# 依存関係を毎週確認し、更新の PR を作る（PR は unitTest のワークフローで検証される）
+version: 2
+updates:
+  # gradle/libs.versions.toml のライブラリ・プラグインと Gradle Wrapper
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    groups:
+      # AGP と Gradle は対応する組み合わせがあり、Android Studio の対応バージョンにも関わるのでまとめる
+      android-build:
+        patterns:
+          - "com.android.*"
+          - "gradle-wrapper"
+      # Kotlin（Compose コンパイラ・シリアライズのプラグインも同じバージョン）と kotlinx のライブラリ、
+      # Kotlin のメタデータを読む KSP と Dagger（Hilt）は一緒に上げる
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "com.google.devtools.ksp*"
+          - "com.google.dagger*"
+      androidx:
+        patterns:
+          - "androidx.*"
+      # 残りのライブラリは、マイナー・パッチの更新を1つの PR にまとめる（メジャーの更新は個別の PR）
+      libraries:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # .github/workflows のアクション
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
