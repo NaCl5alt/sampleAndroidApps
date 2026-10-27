@@ -1,4 +1,4 @@
-name: build release apk
+name: build release aab
 
 on:
   workflow_dispatch:
@@ -18,9 +18,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: set up JDK 1.17
-        uses: actions/setup-java@v3
+      - uses: actions/checkout@v7
+      - name: set up JDK 17
+        uses: actions/setup-java@v6
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -41,13 +41,13 @@ jobs:
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+          BUILD_TOOLS_VERSION: "36.0.0"
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{github.ref_name}}.aab
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
-      - name: Upload APK to Release
+      - name: Upload AAB to Release
         if: github.event_name != 'workflow_dispatch'
         run: |
           mv ${{steps.sign_app.outputs.signedReleaseFile}} ./${{github.ref_name}}.aab
