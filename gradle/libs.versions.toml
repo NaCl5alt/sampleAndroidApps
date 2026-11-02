@@ -19,7 +19,7 @@ androidxHilt = "1.4.0"
 ksp = "2.3.12"
 zoomable = "2.16.0"
 ossLicensesPlugin = "0.13.0"
-ossLicensesPlayServices = "17.5.2"
+ossLicensesPlayServices = "17.5.3"
 timber = "5.0.1"
 kotlinxCoroutines = "1.11.0"
 
