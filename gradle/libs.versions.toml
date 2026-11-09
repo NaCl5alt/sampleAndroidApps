@@ -16,7 +16,7 @@ okhttp = "5.5.1"
 hilt = "2.60.1"
 androidxHilt = "1.4.0"
 # KSP 2.3 以降は Kotlin とは別にバージョンが付く
-ksp = "2.3.12"
+ksp = "2.3.13"
 zoomable = "2.16.0"
 ossLicensesPlugin = "0.13.0"
 ossLicensesPlayServices = "17.5.2"
